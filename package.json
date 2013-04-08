@@ -1,0 +1,20 @@
+{
+	"name": "ManagEat",
+	"description": "Rest server example",
+	"version": "0.0.1-2",
+	"private": "true",
+	"dependencies": {
+		"express": "3.X",
+		"mongodb": "1.X",
+		"mongodb" : "1.X",
+		"underscore" : "*"
+	},
+	"engines": {
+		"node": "0.8.x",
+		"npm": "1.1.x"
+	},
+	"subdomain": "goofyahead.manageat",
+	"scripts": {
+		"start": "server.js"
+	}
+}

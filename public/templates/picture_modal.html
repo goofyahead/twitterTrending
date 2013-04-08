@@ -1,0 +1,15 @@
+<!-- Modal -->
+<div class="row">
+	<% for (var x=1; x<=3 ; x++) { %>
+	<% if (x==1){ %>
+	<div class="span2 offset1">
+		<% } else { %>
+		<div class="span2">
+			<% } %>
+			<img id='picture' alt=<%= pictures.thumbnail + '0' + x + '.jpg' %> src=/images/<%= pictures.thumbnail + '0' + x + '.jpg' %> >
+		</div>
+
+		<% } %>
+	</div>
+</div>
+<div class="row"></div>
