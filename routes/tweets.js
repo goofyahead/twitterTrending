@@ -82,7 +82,7 @@ exports.getTrendsOfCity = function (req, res) {
 	mongo.findByEventsByCity(city, function (items) {
 		console.log(items[0]);
 		getTweetsFromHashtag(items[0].twitter_hashtag, function (tweets) {
-			processJson (tweets);
+			processJson (tweets, res);
 		}, function () { 
 			console.log(error)
 		});
@@ -91,7 +91,7 @@ exports.getTrendsOfCity = function (req, res) {
 	});
 }
 
-function processJson (data) {
+function processJson (data, res) {
 	var users = [];
 	var images = [];
 	var projects = [];
@@ -109,7 +109,12 @@ function processJson (data) {
 	}
 	_.each (tweets.statuses, function (item) {
 		tweetList.push(item.text);
-		users.push ({'name' : item.user.name, 'image' : item.user.profile_image_url});
+		if (checkArrayByName(item.user.name, users)) {
+			console.log('user.hit');
+		} else {
+			users.push ({'name' : item.user.name, 
+				'image' : item.user.profile_image_url, 'screenName' : item.user.screen_name});
+		}
 		if (item.entities.media) {
 			images.push(item.entities.media[0].media_url);
 		}
@@ -152,6 +157,9 @@ function processJson (data) {
 	console.log(images);
 	console.log(projects);
 	console.log(winners);
+
+	res.send({'tweetList' : tweetList, 'users' : users, 'images' : images, 'projects' : projects, 'winners' : winners });
+	res.end();
 }
 
 function checkArrayByName (value, array) {

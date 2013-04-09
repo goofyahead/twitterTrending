@@ -11,7 +11,7 @@ var HTTPS_PORT = 4433;
 
 app.configure(function(){
 	app.use(express.bodyParser());
-	app.use('/images', express.static(__dirname + '/public/images'));
+	app.use('/', express.static(__dirname + '/public'));
 	app.use('/videos', express.static(__dirname + '/public/videos'));
 });
 

@@ -1,43 +1,85 @@
 <!DOCTYPE html>
-<html lang="es">
+<html>
 <head>
-	<!-- Bootstrap -->
-    <link href="css/bootstrap.css" rel="stylesheet" media="screen">
-    <link rel="stylesheet" type="text/css" href="css/myStyles.css">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<!-- <link href="assets/css/bootstrap-responsive.css" rel="stylesheet"> -->
+	<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+	<style type="text/css">
+	html { height: 100% }
+	body { height: 100%; margin: 0; padding: 0 }
+	#map-canvas { height: 100% }
+	</style>
+	<script type="text/javascript"
+	src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDiNhFxatn5SN25Mb1CqAN0lhkHw9do5l4&sensor=true">
+	</script>
+	<script type="text/javascript">
+	function initialize() {
+		var mapOptions = {
+			center: new google.maps.LatLng(-34.397, 150.644),
+			zoom: 8,
+			mapTypeId: google.maps.MapTypeId.ROADMAP
+		};
+		var map = new google.maps.Map(document.getElementById("map-canvas"),
+			mapOptions);
+        // Initializing variable with location name</pre>
+        var address = 'london';
+
+		// Creating new object of class Geocoder
+		var geocoder = new google.maps.Geocoder();
+
+		geocoder.geocode( { 'address': address}, function(results, status) {
+			// Get latlng for the given location name
+			var latlang = results[0].geometry.location;
+
+			// Set given location as center of the map
+			map.setCenter(latlang);
+
+			// Place marker
+			var marker = new google.maps.Marker({
+				map: map,
+				position: latlang
+			});
+
+			google.maps.event.addListener(marker, "click", function() {
+				$.get('api/getTrending/London', function(data) {
+					console.log(data);
+					var renderHtml = '<div><h2>Images:</h2>';
+					$.each(data.images, function (index, item){
+						var image = '<a href="'+ item +'"><img src="'+ item +'" height="90" width="90"></a>';
+						renderHtml = renderHtml + image;
+					});
+					renderHtml = renderHtml + '</div><div><h2>People:</h2>';
+					$.each(data.users, function (index, item) {
+						var userAvatar = '<a href="http://twitter.com/'+ item.screenName +'"><img src="'+ item.image +'" height="90" width="90"></a>'
+						console.log(item);
+						renderHtml = renderHtml + userAvatar;
+					});
+					renderHtml = renderHtml + '</div>'
+
+					renderHtml = renderHtml + '</div><div><h2>Projects:</h2>';
+					$.each(data.projects, function (index, item) {
+						var project = '<a href="'+ item.url +'"><img src="'+ item.image +'" height="90" width="90"></a>'
+						console.log(item);
+						renderHtml = renderHtml + userAvatar;
+					});
+					renderHtml = renderHtml + '</div>'
+
+					var infowindow = new google.maps.InfoWindow({
+						content: renderHtml,
+						maxWidth: 1000
+					});
+					infowindow.open(map, marker);
+				});
+			});
+		});
+		
+	}
+	google.maps.event.addDomListener(window, 'load', initialize);
+
+	</script>
 </head>
 <body>
-<!-- fixed HEADER -->
-<div class="navbar navbar-fixed-top">
-   <div class="navbar-inner">
-    <div class="container">
-    	<ul class="nav">
-    	<li id="home-link" class="active"><a href="#">Home</a></li>
-		<li class="divider-vertical"></li>
-		<li id="dishes-link"><a href="#dishes">Platos</a></li>
-		<li id="categories-link"><a href="#categories">Categorias</a></li>
-		<li id="menu-link"><a href="#menus">Menus</a></li>
-		<li id="ingredients-link"><a href="#ingredients">Ingredientes</a></li>
-		<li id="tags-link"><a href="#tags">Tags</a></li>
-		</ul>
-		<a href="#login" class="btn btn-success pull-right"> LogIn </a>
-    </div>
-  </div>
-</div>
-
-<!-- left menu -->
-<div class="row">
-	<div class="span3">
-		<ul class="nav nav-list" id='left_menu'>
-		</ul>
+	<div id="map-canvas"/>
+	<div class="content">
 	</div>
-	<!-- content -->
-	<div class="span9" id='content'>
-		<h1>CONTENIDO</h1>w
-	</div>
-</div>
-
-<script src="js/lib/require-min.js" data-main="js/main"></script>
+	<script src="js/lib/require-min.js" data-main="js/main"></script>
 </body>
 </html>
